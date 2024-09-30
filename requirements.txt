@@ -2,3 +2,12 @@ torch
 transformers
 huggingface_hub
 langchain
+langchain-huggingface
+accelerate
+langchain_core
+langchain_community
+python-dotenv
+bs4
+pypdf
+faiss-cpu
+PyPDF2
