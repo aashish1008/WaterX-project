@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain.chains import create_retrieval_chain
 import os
+from tts import TTS
 
 load_dotenv()
 
@@ -17,6 +18,8 @@ class WaterXChatBot:
         self.dataset = "waterx_agr.pdf"
         self.inp = inp
         self.groq_api_key = os.getenv('GROQ_API_KEY')
+        # initialize Text-to-speech engine
+        self.engine = pyttsx3.init()
 
     def setup_llm(self):
         llm = ChatGroq(groq_api_key=self.groq_api_key,
@@ -57,6 +60,11 @@ class WaterXChatBot:
         retrieval_chain = create_retrieval_chain(retriever, chain)
         return retrieval_chain
 
+    def txt_to_speech(self, ans):
+        self.engine.say(ans)
+        # play the speech
+        self.engine.runAndWait()
+
     def generate_responses(self):
         try:
             response = self.setup_retrieval_chain().invoke({
@@ -70,7 +78,7 @@ class WaterXChatBot:
 
 if __name__ == "__main__":
     # Test query
-    query = "What are the implementation for Subsurface Irrigation?"
+    query = "I have a limited budget of around INR 30,000 for implementing water-efficient techniques in agriculture. What are the most cost-effective solutions I can adopt?"
 
     # Initialize and run chatbot
     print("Initializing chatbot...")
@@ -79,3 +87,6 @@ if __name__ == "__main__":
     response = qa.generate_responses()
     print("\nQuery:", query)
     print("\nResponse:", response)
+    print("Audio On...")
+    qa.txt_to_speech(response)
+    print("Stop..")
